@@ -40,17 +40,21 @@ namespace ana
 
     static Hist FromDirectory(TDirectory* dir);
 
+    /// Set by CAFANA_STAT_ERRS environment variable
+    static bool StatErrorsEnabled();
+
     TH1D* ToTH1(const Binning& bins) const;
 
     bool HasStan() const {return fType == kDenseStan;}
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
+    const Eigen::ArrayXd& GetEigenSqErrors() const;
 
     int GetNbinsX() const;
     double GetBinError(int i) const;
     double Integral() const;
 
-    void Fill(const Binning& bins, double x, double w);
+    void Fill(int bin, double w);
     void Scale(double s);
     void Scale(const stan::math::var& s);
     void ResetErrors();
@@ -65,6 +69,7 @@ namespace ana
     void Divide(const Hist& rhs);
 
     void Write(const Binning& bins) const;
+
   protected:
     Hist();
 
@@ -79,7 +84,8 @@ namespace ana
     Eigen::SparseVector<double> fDataSparse;
     Eigen::ArrayXstan fDataStan;
     Eigen::ArrayXd fData;
-    Eigen::ArrayXd fSumSq; ///< Accumulate errors, if enabled
-    bool fSqrtErrs; ///< Special case when filled with unweighted data
+
+    mutable Eigen::ArrayXd fSumSq; ///< Accumulate errors, if enabled
+    mutable bool fSqrtErrs; ///< Special case when filled with unweighted data
   };
 }

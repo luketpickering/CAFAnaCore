@@ -20,6 +20,13 @@ namespace
 namespace ana
 {
   //----------------------------------------------------------------------
+  Spectrum::Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse)
+    : Spectrum(axis, sparse)
+  {
+    src.Register(this);
+  }
+
+  //----------------------------------------------------------------------
   Spectrum::Spectrum(const LabelsAndBins& axis, ESparse sparse)
     : fHist(Hist::Uninitialized()), fPOT(0), fLivetime(0), fAxis(axis)
   {
@@ -60,6 +67,7 @@ namespace ana
 	
   //----------------------------------------------------------------------
   Spectrum::Spectrum(const Spectrum& rhs):
+    IValueSink(rhs),
     fHist(rhs.fHist),
     fPOT(rhs.fPOT),
     fLivetime(rhs.fLivetime),
@@ -70,6 +78,7 @@ namespace ana
 
   //----------------------------------------------------------------------
   Spectrum::Spectrum(Spectrum&& rhs):
+    IValueSink(rhs),
     fHist(std::move(rhs.fHist)),
     fPOT(rhs.fPOT),
     fLivetime(rhs.fLivetime),
@@ -270,6 +279,15 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Eigen::ArrayXd Spectrum::GetEigenSqErrors(double exposure, EExposureType expotype) const
+  {
+    if(expotype == kPOT)
+      return util::sqr(exposure/fPOT) * fHist.GetEigenSqErrors();
+    else
+      return util::sqr(exposure/fLivetime) * fHist.GetEigenSqErrors();
+  }
+
+  //----------------------------------------------------------------------
   void Spectrum::Scale(double c)
   {
     fHist.Scale(c);
@@ -328,8 +346,20 @@ namespace ana
   //----------------------------------------------------------------------
   void Spectrum::Fill(double x, double w)
   {
-    fHist.Fill(fAxis.GetBins1D(), x, w);
-    // TODO Pull binning out of Hist entirely and just update an index?
+    const int bin = fAxis.GetBins1D().FindBin(x);
+    fHist.Fill(bin, w);
+  }
+
+  //----------------------------------------------------------------------
+  void Spectrum::FillPOT(double pot)
+  {
+    fPOT += pot;
+  }
+
+  //----------------------------------------------------------------------
+  void Spectrum::FillLivetime(double livetime)
+  {
+    fLivetime += livetime;
   }
 
   //----------------------------------------------------------------------
@@ -448,7 +478,7 @@ namespace ana
       if(fLivetime && rhs.fLivetime){
         // If POT/livetime ratios match, keep regular lifetime, otherwise zero
         // it out.
-        if(AlmostEqual(fLivetime*rhs.fPOT, rhs.fLivetime*fPOT))
+        if(!AlmostEqual(fLivetime*rhs.fPOT, rhs.fLivetime*fPOT))
           fLivetime = 0;
       }
       if(!fLivetime && rhs.fLivetime){
