@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
 #include "CAFAna/Core/StanVar.h"
 #endif
 
@@ -13,7 +13,7 @@ class TH1D;
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
 
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
 namespace Eigen{
   using ArrayXstan = Eigen::Array<stan::math::var, Eigen::Dynamic, 1>;
   using VectorXstan = Eigen::Matrix<stan::math::var, Eigen::Dynamic, 1>;
@@ -42,7 +42,7 @@ namespace ana
     static Hist AdoptSparse(Eigen::SparseVector<double>&& v);
     static Hist Adopt(Eigen::ArrayXd&& v);
     static Hist AdoptWithErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& sqerr);
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     static Hist AdoptStan(Eigen::ArrayXstan&& v);
 #endif
 
@@ -54,7 +54,7 @@ namespace ana
     TH1D* ToTH1(const Binning& bins) const;
 
     bool HasStan() const
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
       {return fType == kDenseStan;}
 #else
       {return false;}
@@ -62,7 +62,7 @@ namespace ana
 
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
     const Eigen::ArrayXd& GetEigenSqErrors() const;
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
 #endif
 
@@ -72,7 +72,7 @@ namespace ana
 
     void Fill(int bin, double w);
     void Scale(double s);
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     void Scale(const stan::math::var& s);
 #endif
     void ResetErrors();
@@ -94,7 +94,7 @@ namespace ana
     // Helpers for the public Add() function
     void Add(const Eigen::SparseVector<double>& rhs, double scale);
     void Add(const Eigen::ArrayXd& rhs, double scale);
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     void Add(const Eigen::ArrayXstan& rhs, double scale);
 #endif
 
@@ -103,7 +103,7 @@ namespace ana
 
     Eigen::SparseVector<double> fDataSparse;
     Eigen::ArrayXd fData;
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     Eigen::ArrayXstan fDataStan;
 #endif
 

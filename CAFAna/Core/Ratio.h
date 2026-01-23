@@ -34,7 +34,7 @@ namespace ana
     {
     }
 
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     Ratio(Eigen::ArrayXstan&& arr,
           const std::vector<std::string>& labels,
           const std::vector<Binning>& bins)
@@ -60,14 +60,14 @@ namespace ana
     TH2* ToTH2() const;
 
     bool HasStan() const
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     {return fHist.HasStan();}
 #else
     {return false;}
 #endif
 
     const Eigen::ArrayXd& GetEigen() const {return fHist.GetEigen();}
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     const Eigen::ArrayXstan& GetEigenStan() const {return fHist.GetEigenStan();}
 #endif
 

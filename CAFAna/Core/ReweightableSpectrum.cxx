@@ -3,7 +3,7 @@
 #include "CAFAna/Core/Binning.h"
 #include "CAFAna/Core/Ratio.h"
 
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
 #include "CAFAna/Core/Stan.h"
 #endif
 
@@ -157,7 +157,7 @@ namespace ana
                       fAxisX, fPOT, fLivetime);
     }
     else{
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
       const Eigen::VectorXstan& vec = ws.GetEigenStan();
 
       return Spectrum(vec.transpose() * fMat, fAxisX, fPOT, fLivetime);

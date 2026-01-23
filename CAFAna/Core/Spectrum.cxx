@@ -2,7 +2,7 @@
 
 #include "CAFAna/Core/Ratio.h"
 
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
 #include "CAFAna/Core/Stan.h"
 #endif
 
@@ -52,7 +52,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
   Spectrum::Spectrum(Eigen::ArrayXstan&& h,
                      const LabelsAndBins& axis,
                      double pot, double livetime)
@@ -69,7 +69,7 @@ namespace ana
     : fHist(Hist::AdoptWithErrors(std::move(h), std::move(sqerr))), fPOT(pot), fLivetime(livetime), fAxis(axis)
   {
   }
-	
+
   //----------------------------------------------------------------------
   Spectrum::Spectrum(const Spectrum& rhs):
     IValueSink(rhs),
@@ -275,7 +275,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
   Eigen::ArrayXstan Spectrum::GetEigenStan(double exposure, EExposureType expotype) const
   {
     if(expotype == kPOT)
@@ -301,7 +301,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
   void Spectrum::Scale(const stan::math::var& c)
   {
     fHist.Scale(c);

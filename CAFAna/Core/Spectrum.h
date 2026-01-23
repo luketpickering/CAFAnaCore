@@ -96,7 +96,7 @@ namespace ana
              double pot, double livetime);
 
     /// Makes a spectrum from an eigen array of stan vars
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     Spectrum(Eigen::ArrayXstan&& h,
              const LabelsAndBins& axis,
              double pot, double livetime);
@@ -207,7 +207,7 @@ namespace ana
                EBinType bintype = kBinContent) const;
 
     bool HasStan() const
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
 	 {return fHist.HasStan();}
 #else
    {return false;}
@@ -215,13 +215,13 @@ namespace ana
 
     /// NB these don't have POT scaling. For expert high performance ops only!
     const Eigen::ArrayXd& GetEigen() const {return fHist.GetEigen();}
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     const Eigen::ArrayXstan& GetEigenStan() const {return fHist.GetEigenStan();}
 #endif
     const Eigen::ArrayXd& GetEigenSqErrors() const {return fHist.GetEigenSqErrors();}
 
     Eigen::ArrayXd GetEigen(double exposure, EExposureType expotype = kPOT) const;
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     Eigen::ArrayXstan GetEigenStan(double exposure, EExposureType expotype = kPOT) const;
 #endif
     Eigen::ArrayXd GetEigenSqErrors(double exposure, EExposureType expotype = kPOT) const;
@@ -273,7 +273,7 @@ namespace ana
 
     /// Multiply this spectrum by a constant c
     void Scale(double c);
-#ifdef CAFANACORE_USE_STAN
+#ifdef CAFAnaCore_USE_STAN
     void Scale(const stan::math::var& v);
 #endif
 
