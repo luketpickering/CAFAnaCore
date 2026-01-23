@@ -2,3 +2,4 @@
 lib/
 inc/
 build/
+.DS_Store
