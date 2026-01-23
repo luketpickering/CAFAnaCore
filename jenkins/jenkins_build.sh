@@ -3,15 +3,15 @@
 set +ex
 env
 
-if [[ $QUALIFIER != *:n308* && $QUALIFIER != *:n311* ]]
+if [[ $QUALIFIER != *:n311* && $QUALIFIER != *:n319* ]]
 then
-    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n308 or n311
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n311 or n319
     exit 1
 fi
 
-if [[ $QUALIFIER != *e19* && $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
+if [[ $QUALIFIER != *e20* && $QUALIFIER != *c7* && $QUALIFIER != *e26* && $QUALIFIER != *c14* ]]
 then
-    echo Unknown compiler in qualifier $QUALIFIER -- must be e19, e20, or c7
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e20, e26, c7, or c14
     exit 1
 fi
 
@@ -21,17 +21,23 @@ then
     exit 1
 fi
 
+if [[ x$STAN != *stan* ]]
+then
+    echo Must specify stan or stanfree or stanthread in STAN variable $STAN
+    exit 1
+fi
+
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
 
 # Looping over lines is a total pain in bash. Easier to just send it to a file
 TMPFILE=`mktemp`
 # Expect to be run in the directory one above....
-jenkins/dependencies.sh $QUALIFIER | sed 's/^/setup /' > $TMPFILE
+jenkins/dependencies.sh $QUALIFIER:$STAN | sed 's/^/setup /' > $TMPFILE
 cat $TMPFILE
 source $TMPFILE
 
-setup cmake v3_14_3 || exit 1
-setup ninja v1_8_2 || exit 1
+setup cmake v3_27_4 || exit 1
+setup ninja v1_11_1 || exit 1
 
 make clean
 
@@ -44,11 +50,25 @@ else
     FLAGS=$FLAGS' CMAKE_BUILD_TYPE=Debug' || exit 2
 fi
 
-if [[ $QUALIFIER == *c7* ]]
+if [[ $QUALIFIER == *c14* ]]
 then
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=clang++' || exit 2
 else
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=g++' || exit 2
+fi
+
+if [[ $STAN == "stan" || $STAN == "stanthread" ]]
+then 
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=On' || exit 2
+else
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=Off' || exit 2
+fi
+
+if [[ $STAN == "stanthread" ]]
+then
+    FLAGS=$FLAGS' USE_STAN_THREADS=On' || exit 2
+else
+    FLAGS=$FLAGS' USE_STAN_THREADS=Off' || exit 2
 fi
 
 time make $FLAGS || exit 2
