@@ -69,6 +69,7 @@ find_package(Threads REQUIRED)
 option (SPACK "Building through Spack")
 if (CAFAnaCore_USE_STAN)
   target_compile_definitions(CAFAnaCore_options CAFAnaCore_USE_STAN)
+  cmake_policy(SET CMP0167 NEW) #don't use builtin FindBoost.cmake
   if (SPACK)
     find_package(Boost REQUIRED)
     find_package(SUNDIALS REQUIRED)
