@@ -54,7 +54,7 @@ target_compile_definitions(CAFAnaCore_options INTERFACE
 target_compile_definitions(CAFAnaCore_options INTERFACE _REENTRANT)
 
 # non-negotiable dependencies
-find_package(ROOT REQUIRED)
+find_package(ROOT REQUIRED EXPORT)
 
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
 string(REGEX REPLACE ".*c\\+\\+([0-9][0-9]).*" "\\1" ROOT_CXX_STANDARD ${ROOT_CXX_FLAGS})
@@ -63,28 +63,28 @@ if(ROOT_CXX_STANDARD LESS_EQUAL 14)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
-find_package(Eigen3 REQUIRED)
-find_package(Threads REQUIRED)
+find_package(Eigen3 REQUIRED EXPORT)
+find_package(Threads REQUIRED EXPORT)
 
 option (SPACK "Building through Spack")
 if (CAFAnaCore_USE_STAN)
   target_compile_definitions(CAFAnaCore_options CAFAnaCore_USE_STAN)
   cmake_policy(SET CMP0167 NEW) #don't use builtin FindBoost.cmake
   if (SPACK)
-    find_package(Boost REQUIRED)
-    find_package(SUNDIALS REQUIRED)
-    find_package(TBB REQUIRED)
+    find_package(Boost REQUIRED EXPORT)
+    find_package(SUNDIALS REQUIRED EXPORT)
+    find_package(TBB REQUIRED EXPORT)
   else()
-    find_package(Boost REQUIRED MODULE)
-    find_package(Sundials REQUIRED MODULE)
-    find_package(TBB REQUIRED MODULE)
+    find_package(Boost REQUIRED MODULE EXPORT)
+    find_package(Sundials REQUIRED MODULE EXPORT)
+    find_package(TBB REQUIRED MODULE EXPORT)
   endif()
   # If we can't find "2019" in the version, ie it's newer than that
   if(TBB_VERSION AND NOT TBB_VERSION MATCHES 2019)
     target_compile_definitions(CAFAnaCore_options INTERFACE TBB_INTERFACE_NEW)
   endif()
 
-  find_package(StanMath REQUIRED MODULE)
+  find_package(StanMath REQUIRED MODULE EXPORT)
   if(CAFAnaCore_USE_STAN_THREADS)
     target_compile_definitions(CAFAnaCore_options INTERFACE STAN_THREADS)
   endif()
@@ -103,7 +103,7 @@ target_link_libraries(CAFAnaCore_options INTERFACE ROOT::Hist ROOT::Core Eigen3:
 
 set(Ifdhc_FOUND FALSE)
 if(CAFAnaCore_USE_Ifdhc)
-  find_package(Ifdhc REQUIRED)
+  find_package(Ifdhc REQUIRED EXPORT)
   target_include_directories(CAFAnaCore_options INTERFACE ${IFDHC_INC})
 endif()
 
