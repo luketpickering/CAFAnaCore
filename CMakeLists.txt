@@ -108,6 +108,6 @@ if(CAFAnaCore_USE_Ifdhc)
 endif()
 
 ###########   now go into the subdirs and do the actual work
-add_subdirectory(CAFAna/Core)
+add_subdirectory(CAFAnaCore)
 
 cet_cmake_config()
