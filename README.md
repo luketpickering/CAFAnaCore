@@ -8,30 +8,68 @@
 
 ----------------------------------------------------------------------
 
-This document briefly describes the build process of the CAFAna framework contained in this package.
+This document briefly describes the build process of the CAFAna framework
+contained in this package.
 
-For documentation on the classes themselves, automatically generated Doxygen pages are maintained on our [GitHub Pages site](https://cafana.github.io/CAFAnaCore/).  (These are automatically updated when pull requests are merged to the `main` branch.)
+For documentation on the classes themselves, automatically generated Doxygen
+pages are maintained on our
+[GitHub Pages site](https://cafana.github.io/CAFAnaCore/).  (These are
+automatically updated when pull requests are merged to the `main` branch.)
 
-## Prerequisites
-* A compiler that understands C++14 (tested with gcc)
-* ROOT v6.00.00 or above
+## Building Standalone
 
-## Build
+### Dependencies
 
-The package should be built using CMake.
+#### Required
 
-CMake builds are 'out-of-source' --- that is, they use a dedicated build directory that you can put anywhere.  In this example, we'll use a build directory that is a subdirectory of the source root (that is, the directory containing this file).
-
-By default, the generated libraries and test executables are installed back into the source tree at `lib/` and `bin/`, respecively.  If you'd like to put them somewhere else, pass `-DCMAKE_INSTALL_PREFIX=/path/to/dir` (where `/path/to/dir` is where you'd like them to be installed) in the `cmake` command below.
-
-```shell script
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make install
+* `cetmodules`: FNAL CMake toolkit
+  + Already fetched: `export cetmodules_ROOT=/path/to/install/prefix`
+  + To fetch
+```bash
+git clone --depth 1 --branch 3.27.03 https://github.com/FNALssi/cetmodules.git
+cd cetmodules; mkdir build; cd build;
+cmake .. -DCMAKE_INSTALL_PREFIX=$(readlink -f $(uname)); make install;
+export cetmodules_ROOT=$(readlink -f $(uname))
 ```
 
-## How to build and and test your changes locally
+* ROOT
+* Eigen3
+
+#### Optional
+
+* [Stan](https://mc-stan.org)
+  + Boost
+* IFDH
+
+### Build
+
+```bash
+git clone git@github.com:cafana/CAFAnaCore.git
+cd CAFAnaCore; mkdir build; cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$(readlink -f $(uname)); make install;
+export CAFAnaCore_ROOT=$(readlink -f $(uname))
+```
+
+* With Stan:
+
+```bash
+cmake .. -DCAFAnaCore_USE_STAN=ON \
+         -CAFAnaCore_USE_STAN_THREADS=<ON|OFF> \
+         -DCMAKE_INSTALL_PREFIX=$(readlink -f $(uname))
+make install;
+```
+
+* With IFDH:
+
+```bash
+cmake .. -DCAFAnaCore_USE_Ifdhc=ON \
+         -DCMAKE_INSTALL_PREFIX=$(readlink -f $(uname))
+make install;
+```
+
+## Building @ FNAL
+
+### Interactively via ups
 
 - `export QUALIFIER=e26:prof` or `e26:debug`, etc
 - `export STAN=stan` or `stanfree` or `stanthread`
@@ -41,7 +79,11 @@ $ make install
 - `export CAFANA_DISABLE_VERSION_CHECK=1`
 - Profit!
 
-## How to build with jenkins
+### NOvA jenkins
+
+#### Build
+
+- Make changes
 
 ```
 git push
@@ -52,9 +94,9 @@ git push --tags
 - Navigate to https://buildmaster.fnal.gov/buildmaster/view/Nova/job/external/job/cafanacore_build/ and click "Build Now".
 - Wait
 
-## How to deploy
+#### Deploy
 
-```
+```bash
 wget https://buildmaster.fnal.gov/buildmaster/view/Nova/job/external/job/cafanacore_collect/lastSuccessfulBuild/artifact/*zip*/archive.zip
 unzip archive.zip
 mv archive/* .
@@ -70,13 +112,14 @@ cd -
 cvmfs_server publish ${EXPERIMENT}.opensciencegrid.org
 ```
 
-### For NOvA
+### Post tag procedure
 
-Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`. Notify `#cmake`
-
-### For DUNE
-
-Update `cmake/ups_env_setup.sh`
+* __NOvA__:
+  + Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`
+  + Notify `#cmake`
+* __DUNE__:
+  + Update `cmake/ups_env_setup.sh`
 
 ## Usage
+
 Coming soon!
