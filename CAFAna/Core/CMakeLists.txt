@@ -8,7 +8,7 @@ if(NOT CAFAnaCore_USE_Ifdhc)
   list(FILTER SOURCES EXCLUDE REGEX ".*Wildcard.*")
 endif()
 
-cet_make_library(LIBRARY_NAME CAFAnaCoreExt
+cet_make_library(LIBRARY_NAME CAFAnaCore
   SOURCE
     ${SOURCES}
     ${HEADER_FILES}
