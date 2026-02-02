@@ -1,4 +1,4 @@
-#include "CAFAnaCore/Registry.txx"
+#include "CAFAnaCore/Registry.tcc"
 
 #include "CAFAnaCore/IFittable.h"
 #include "CAFAnaCore/IFitSyst.h"

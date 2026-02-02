@@ -1,4 +1,4 @@
-file(GLOB HEADER_FILES *.h *.txx)
+file(GLOB HEADER_FILES *.h *.tcc)
 file(GLOB SOURCES *.cxx)
 
 if(NOT CAFAnaCore_USE_Ifdhc)
