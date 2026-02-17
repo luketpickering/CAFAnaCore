@@ -33,9 +33,24 @@ if(NOT SUNDIALS_LIB)
 		set(SUNDIALS_LIB ${SUNDIALS_DIR}/lib)
 	endif()
 endif()
-message(STATUS "Found Sundials include dir: ${SUNDIALS_INC}")
+message(STATUS "Found Sundials lib dir: ${SUNDIALS_LIB}")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Sundials
 		REQUIRED_VARS SUNDIALS_DIR SUNDIALS_VERSION SUNDIALS_INC SUNDIALS_LIB
 		VERSION_VAR SUNDIALS_VERSION)
+
+add_library(Sundials::all INTERFACE IMPORTED)
+
+if(DEFINED ENV{STAN_MATH_LOCAL})
+  target_include_directories(Sundials::all INTERFACE
+    $<BUILD_INTERFACE:${SUNDIALS_INC}>)
+else()
+  target_include_directories(Sundials::all INTERFACE ${SUNDIALS_INC})
+endif()
+
+add_library(Sundials::kinsol STATIC IMPORTED)
+set_target_properties(Sundials::kinsol PROPERTIES
+  IMPORTED_LOCATION ${SUNDIALS_LIB}/libsundials_kinsol.a)
+
+target_link_libraries(Sundials::all INTERFACE Sundials::kinsol)

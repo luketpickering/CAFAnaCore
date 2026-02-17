@@ -49,3 +49,17 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(TBB
 		REQUIRED_VARS TBB_DIR TBB_VERSION TBB_INC TBB_LIB
 		VERSION_VAR TBB_VERSION)
+
+add_library(TBB::tbb INTERFACE IMPORTED)
+
+if(DEFINED ENV{STAN_MATH_LOCAL})
+  target_include_directories(TBB::tbb INTERFACE
+    $<BUILD_INTERFACE:${TBB_INC}>)
+else()
+  target_include_directories(TBB::tbb INTERFACE ${TBB_INC})
+endif()
+
+# If we can't find "2019" in the version, ie it's newer than that
+if(TBB_VERSION AND NOT TBB_VERSION MATCHES 2019)
+  target_compile_definitions(TBB::tbb INTERFACE TBB_INTERFACE_NEW)
+endif()
