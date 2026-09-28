@@ -1,7 +1,7 @@
 ############   top level config
 cmake_minimum_required(VERSION 3.14)
 
-project(CAFAnaCore)
+project(CAFAnaCore VERSION 2.8)
 
 find_package(cetmodules REQUIRED)
 include(CetCMakeEnv)
